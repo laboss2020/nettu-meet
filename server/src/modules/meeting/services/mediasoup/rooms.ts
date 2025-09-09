@@ -10,9 +10,9 @@ import {
     RtpEncodingParameters,
     WebRtcTransport,
     Worker,
-} from 'mediasoup/lib/types';
+} from 'mediasoup/node/lib/types';
 import { config } from './config';
-import {logger} from "../../../../logger"
+import { logger } from '../../../../logger';
 
 const mediasoupWorkers: Worker[] = [];
 const numWorkers = os.cpus().length;
@@ -37,7 +37,11 @@ export async function runMediasoupWorkers(): Promise<void> {
         });
 
         worker.on('died', () => {
-            logger.error({workerId : worker.pid}, 'mediasoup Worker died, exiting  in 2 seconds... [pid:%d]', worker.pid);
+            logger.error(
+                { workerId: worker.pid },
+                'mediasoup Worker died, exiting  in 2 seconds... [pid:%d]',
+                worker.pid,
+            );
 
             setTimeout(() => process.exit(1), 2000);
         });
@@ -74,7 +78,7 @@ export interface RoomState {
     // external
     id: string;
     peers: Record<string, Peer>;
-    activeSpeaker: { producerId: null; volume: null; peerId: null };
+    activeSpeaker: { producerId: string | null; volume: number | null; peerId: string | unknown | null };
     // internal
     transports: Record<string, WebRtcTransport>;
     producers: Producer[];
@@ -92,7 +96,7 @@ export const createRoom = async (roomId: string): Promise<RoomState> => {
     if (existingRoom) {
         return existingRoom;
     }
-    logger.info({roomId : roomId}, 'Creating room: ' + roomId);
+    logger.info({ roomId: roomId }, 'Creating room: ' + roomId);
 
     const mediaCodecs = config.mediasoup.router.mediaCodecs;
     const worker = getNextWorker();
@@ -105,7 +109,7 @@ export const createRoom = async (roomId: string): Promise<RoomState> => {
     });
     audioLevelObserver.on('volumes', (volumes) => {
         const { producer, volume } = volumes[0];
-        logger.info({peerId : producer.appData.peerId, volume : volume}, 'audio-level volumes event');
+        logger.info({ peerId: producer.appData.peerId, volume: volume }, 'audio-level volumes event');
         const room = rooms.get(roomId);
         if (!room) return;
         room.activeSpeaker.producerId = producer.id;

@@ -91,7 +91,7 @@ export const PeerVideo = (props: Props) => {
         node.srcObject = props.stream;
       }
     },
-    [props.consumerIds.join("#")]
+    [props.stream]
   );
 
   const displayMicAndName = (isMicActive: boolean) => (

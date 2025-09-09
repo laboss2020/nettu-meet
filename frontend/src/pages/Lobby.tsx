@@ -167,21 +167,21 @@ const Lobby = (props: Props) => {
   const [devicesAnchorEl, setDevicesAnchorEl] = useState<any>(null);
 
   useEffect(() => {
+    requestPermissions();
+  }, []);
+
+  useEffect(() => {
     // replace stream object to update soundmeter
     const mediaStream = new MediaStream();
     if (config.audio) {
       mediaStream.addTrack(audio.getTracks()[0]);
     }
     setStream(mediaStream);
-  }, [config.audio]);
+  }, [audio, config.audio]);
 
   useEffect(() => {
     videoRef.current.srcObject = webcam;
-  }, [config.webcam]);
-
-  useEffect(() => {
-    requestPermissions();
-  }, []);
+  }, [config.webcam, webcam]);
 
   const { meeting } = meetingState();
 

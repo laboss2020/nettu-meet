@@ -163,7 +163,6 @@ const LandingPage = (props: Props) => {
         <Toolbar>
           <NettuLogoWithLabel label="Nettu Meet" />
           <div className={classes.appbarEnd}>
-            <GithubRepoBadge />
             {!isMobile && (
               <Fragment>
                 <Button
@@ -231,8 +230,8 @@ const LandingPage = (props: Props) => {
                   "File sharing: Upload relevant files to the meeting.",
                   "Graph plotter: Insert mathematical graphs to the whiteboard.",
                   "Customizable: Create an account and upload your own logos.",
-                ].map((feature) => (
-                  <Box
+                ].map((feature, index) => (
+                  <Box key={index}
                     style={{
                       display: "flex",
                       alignItems: "center",

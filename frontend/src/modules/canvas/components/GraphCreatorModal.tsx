@@ -13,7 +13,7 @@ import functionPlot from "function-plot";
 import SettingsIcon from "@material-ui/icons/Settings";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CloseIcon from "@material-ui/icons/Close";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { meetingInteractor } from "../../meeting/interactors";
 import { meetingState } from "../../meeting/state/meeting";
 import { Resource } from "../../meeting/domain/resource";
@@ -225,10 +225,6 @@ export const GraphCreatorModal = (props: Props) => {
     }
   }, [graphs, gridConfig]);
 
-  useEffect(() => {
-    addNewGraph();
-  }, []);
-
   const updateGraphData = (data: any, i: number) => {
     const newGraphs = [...graphs];
     newGraphs[i] = {
@@ -238,7 +234,7 @@ export const GraphCreatorModal = (props: Props) => {
     setGraphs(newGraphs);
   };
 
-  const addNewGraph = () => {
+  const addNewGraph = useCallback(() => {
     const newGraph = {
       id: Math.random(),
       fn: "x",
@@ -248,7 +244,11 @@ export const GraphCreatorModal = (props: Props) => {
       // closed: true
     };
     setGraphs([...graphs, newGraph]);
-  };
+  }, [graphs]);
+
+  useEffect(() => {
+    addNewGraph();
+  }, [addNewGraph]);
 
   const onDeleteGraph = (index: number) => {
     const newGraphs = [...graphs];
